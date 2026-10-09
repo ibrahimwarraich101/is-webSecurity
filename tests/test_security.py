@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
-BASE = 'http://localhost:8000'
+BASE = 'http://127.0.0.1:8000'
 
 
 class SecurityTests(unittest.TestCase):
@@ -63,14 +63,14 @@ class SecurityTests(unittest.TestCase):
             self.assertNotIn('<h2>AdminPass!26</h2>', body)
 
     def test_reflected_encoding(self):
-        payload = '<img src=x onerror="document.body.dataset.xss=1">'
+        payload = '<svg onload="document.getElementById(`search-summary`).textContent=`REFLECTED XSS EXECUTED`"></svg>'
         for mode in ('vulnerable', 'safe'):
             code, body = self.request(mode, '/courses?' + urlencode({'q': payload}))
             self.assertEqual(code, 200)
             self.assertIn('Search results for: ' + (payload if mode == 'vulnerable' else html.escape(payload)), body)
 
     def test_stored_encoding(self):
-        payload = '<img src=x onerror="document.body.dataset.stored=1">'
+        payload = '<svg onload="this.parentElement.innerHTML=\'<strong>STORED XSS EXECUTED</strong>\'"></svg>'
         for mode in ('vulnerable', 'safe'):
             token = self.login(mode)
             self.request(mode, '/discussion', {'body': payload, 'csrf_token': token})

