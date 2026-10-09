@@ -1,0 +1,6 @@
+data/
+__pycache__/
+tmp/
+*.zip
+Assignment 02.pdf
+node_modules/
