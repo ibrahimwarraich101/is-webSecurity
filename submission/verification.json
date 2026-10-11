@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 37,
+  "checks": 41,
   "evidence": [
     {
       "mode": "vulnerable",
@@ -9,7 +9,7 @@
       "observation": "Application dashboard renders.",
       "url": "http://localhost:8000/vulnerable",
       "screenshot": "screenshots/vulnerable-dashboard.png",
-      "capturedAt": "2026-10-09T13:06:30.059Z"
+      "capturedAt": "2026-10-11T16:07:56.327Z"
     },
     {
       "mode": "vulnerable",
@@ -18,7 +18,7 @@
       "observation": "Payload executed through the search response.",
       "url": "http://localhost:8000/vulnerable/courses?q=%3Csvg+onload%3D%22document.getElementById%28%60search-summary%60%29.textContent%3D%60REFLECTED+XSS+EXECUTED%60%22%3E%3C%2Fsvg%3E",
       "screenshot": "screenshots/vulnerable-reflected-xss.png",
-      "capturedAt": "2026-10-09T13:06:30.909Z"
+      "capturedAt": "2026-10-11T16:07:57.263Z"
     },
     {
       "mode": "vulnerable",
@@ -27,7 +27,7 @@
       "observation": "Fragment payload executed in innerHTML.",
       "url": "http://localhost:8000/vulnerable/planner#%3Cimg%20src%3Dx%20onerror%3D%22document.getElementById('note-preview').textContent%3D'DOM%20XSS%20EXECUTED'%22%3E",
       "screenshot": "screenshots/vulnerable-dom-xss.png",
-      "capturedAt": "2026-10-09T13:06:31.689Z"
+      "capturedAt": "2026-10-11T16:07:58.088Z"
     },
     {
       "mode": "vulnerable",
@@ -36,7 +36,7 @@
       "observation": "Saved payload executes for a separate unauthenticated visitor.",
       "url": "http://localhost:8000/vulnerable/discussion",
       "screenshot": "screenshots/vulnerable-stored-xss.png",
-      "capturedAt": "2026-10-09T13:06:33.338Z"
+      "capturedAt": "2026-10-11T16:07:59.943Z"
     },
     {
       "mode": "vulnerable",
@@ -45,16 +45,25 @@
       "observation": "Original email persisted before the attack.",
       "url": "http://localhost:8000/vulnerable/profile",
       "screenshot": "screenshots/vulnerable-csrf-before.png",
-      "capturedAt": "2026-10-09T13:06:33.891Z"
+      "capturedAt": "2026-10-11T16:08:00.573Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "csrf-setup",
+      "payload": "External HTML form posts email=attacker@lab.invalid to localhost:8000 without a CSRF token",
+      "observation": "Attacker form is hosted on a separate origin, localhost:8001.",
+      "url": "http://localhost:8001/vulnerable?manual=1",
+      "screenshot": "screenshots/vulnerable-csrf-setup.png",
+      "capturedAt": "2026-10-11T16:08:01.001Z"
     },
     {
       "mode": "vulnerable",
       "name": "csrf-response",
-      "payload": "External auto-submitting POST: email=attacker@lab.invalid; no CSRF token",
-      "observation": "Cross-site form changed the authenticated profile.",
+      "payload": "External POST: email=attacker@lab.invalid; no CSRF token",
+      "observation": "Cross-origin form changed the authenticated profile.",
       "url": "http://localhost:8000/vulnerable/profile",
       "screenshot": "screenshots/vulnerable-csrf-response.png",
-      "capturedAt": "2026-10-09T13:06:34.555Z"
+      "capturedAt": "2026-10-11T16:08:01.470Z"
     },
     {
       "mode": "vulnerable",
@@ -63,7 +72,7 @@
       "observation": "Attacker email is stored in the database.",
       "url": "http://localhost:8000/vulnerable/profile",
       "screenshot": "screenshots/vulnerable-csrf-after.png",
-      "capturedAt": "2026-10-09T13:06:34.962Z"
+      "capturedAt": "2026-10-11T16:08:01.919Z"
     },
     {
       "mode": "vulnerable",
@@ -72,7 +81,7 @@
       "observation": "Authentication bypassed as administrator.",
       "url": "http://localhost:8000/vulnerable/profile",
       "screenshot": "screenshots/vulnerable-sqli-easy.png",
-      "capturedAt": "2026-10-09T13:06:35.522Z"
+      "capturedAt": "2026-10-11T16:08:02.623Z"
     },
     {
       "mode": "vulnerable",
@@ -81,7 +90,7 @@
       "observation": "Enrollment found",
       "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+1%3D1+--+",
       "screenshot": "screenshots/vulnerable-sqli-intermediate-true.png",
-      "capturedAt": "2026-10-09T13:06:36.039Z"
+      "capturedAt": "2026-10-11T16:08:03.188Z"
     },
     {
       "mode": "vulnerable",
@@ -90,7 +99,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+1%3D2+--+",
       "screenshot": "screenshots/vulnerable-sqli-intermediate-false.png",
-      "capturedAt": "2026-10-09T13:06:36.544Z"
+      "capturedAt": "2026-10-11T16:08:03.759Z"
     },
     {
       "mode": "vulnerable",
@@ -99,7 +108,7 @@
       "observation": "Enrollment found",
       "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27A%27+--+",
       "screenshot": "screenshots/vulnerable-sqli-intermediate-infer-A.png",
-      "capturedAt": "2026-10-09T13:06:37.073Z"
+      "capturedAt": "2026-10-11T16:08:04.364Z"
     },
     {
       "mode": "vulnerable",
@@ -108,7 +117,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/vulnerable/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27Z%27+--+",
       "screenshot": "screenshots/vulnerable-sqli-intermediate-infer-Z.png",
-      "capturedAt": "2026-10-09T13:06:37.577Z"
+      "capturedAt": "2026-10-11T16:08:04.984Z"
     },
     {
       "mode": "vulnerable",
@@ -117,7 +126,7 @@
       "observation": "Observed database response: Information Security",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+ORDER+BY+3+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-columns-three.png",
-      "capturedAt": "2026-10-09T13:06:38.074Z"
+      "capturedAt": "2026-10-11T16:08:05.579Z"
     },
     {
       "mode": "vulnerable",
@@ -126,7 +135,7 @@
       "observation": "Observed database response: ORDER BY",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+ORDER+BY+4+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-columns-four.png",
-      "capturedAt": "2026-10-09T13:06:38.570Z"
+      "capturedAt": "2026-10-11T16:08:06.193Z"
     },
     {
       "mode": "vulnerable",
@@ -135,7 +144,7 @@
       "observation": "Observed database response: main",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27DATABASE%27%2Cname%2Cfile+FROM+pragma_database_list+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-database.png",
-      "capturedAt": "2026-10-09T13:06:39.144Z"
+      "capturedAt": "2026-10-11T16:08:06.836Z"
     },
     {
       "mode": "vulnerable",
@@ -144,7 +153,7 @@
       "observation": "Observed database response: CREATE TABLE users",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27TABLE%27%2Cname%2Csql+FROM+sqlite_master+WHERE+type%3D%27table%27+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-tables.png",
-      "capturedAt": "2026-10-09T13:06:39.709Z"
+      "capturedAt": "2026-10-11T16:08:07.491Z"
     },
     {
       "mode": "vulnerable",
@@ -153,7 +162,7 @@
       "observation": "Observed database response: password",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+%27COLUMN%27%2Cname%2Ctype+FROM+pragma_table_info%28%27users%27%29+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-columns.png",
-      "capturedAt": "2026-10-09T13:06:40.270Z"
+      "capturedAt": "2026-10-11T16:08:08.182Z"
     },
     {
       "mode": "vulnerable",
@@ -162,7 +171,16 @@
       "observation": "Observed database response: AdminPass!26",
       "url": "http://localhost:8000/vulnerable/courses?q=%27+UNION+SELECT+username%2Cpassword%2Cemail+FROM+users+--+",
       "screenshot": "screenshots/vulnerable-sqli-advanced-credentials.png",
-      "capturedAt": "2026-10-09T13:06:40.811Z"
+      "capturedAt": "2026-10-11T16:08:08.840Z"
+    },
+    {
+      "mode": "vulnerable",
+      "name": "normal-search",
+      "payload": "Information",
+      "observation": "Legitimate course search still returns Information Security.",
+      "url": "http://localhost:8000/vulnerable/courses?q=Information",
+      "screenshot": "screenshots/vulnerable-normal-search.png",
+      "capturedAt": "2026-10-11T16:08:09.441Z"
     },
     {
       "mode": "safe",
@@ -171,7 +189,7 @@
       "observation": "Application dashboard renders.",
       "url": "http://localhost:8000/safe",
       "screenshot": "screenshots/safe-dashboard.png",
-      "capturedAt": "2026-10-09T13:06:41.575Z"
+      "capturedAt": "2026-10-11T16:08:10.173Z"
     },
     {
       "mode": "safe",
@@ -180,7 +198,7 @@
       "observation": "Literal payload rendered without execution.",
       "url": "http://localhost:8000/safe/courses?q=%3Csvg+onload%3D%22document.getElementById%28%60search-summary%60%29.textContent%3D%60REFLECTED+XSS+EXECUTED%60%22%3E%3C%2Fsvg%3E",
       "screenshot": "screenshots/safe-reflected-xss.png",
-      "capturedAt": "2026-10-09T13:06:42.408Z"
+      "capturedAt": "2026-10-11T16:08:11.123Z"
     },
     {
       "mode": "safe",
@@ -189,7 +207,7 @@
       "observation": "Fragment rendered through textContent.",
       "url": "http://localhost:8000/safe/planner#%3Cimg%20src%3Dx%20onerror%3D%22document.getElementById('note-preview').textContent%3D'DOM%20XSS%20EXECUTED'%22%3E",
       "screenshot": "screenshots/safe-dom-xss.png",
-      "capturedAt": "2026-10-09T13:06:43.206Z"
+      "capturedAt": "2026-10-11T16:08:12.028Z"
     },
     {
       "mode": "safe",
@@ -198,7 +216,7 @@
       "observation": "Saved payload is visible as literal text to another visitor.",
       "url": "http://localhost:8000/safe/discussion",
       "screenshot": "screenshots/safe-stored-xss.png",
-      "capturedAt": "2026-10-09T13:06:44.780Z"
+      "capturedAt": "2026-10-11T16:08:13.873Z"
     },
     {
       "mode": "safe",
@@ -207,16 +225,25 @@
       "observation": "Original email persisted before the attack.",
       "url": "http://localhost:8000/safe/profile",
       "screenshot": "screenshots/safe-csrf-before.png",
-      "capturedAt": "2026-10-09T13:06:45.318Z"
+      "capturedAt": "2026-10-11T16:08:14.546Z"
+    },
+    {
+      "mode": "safe",
+      "name": "csrf-setup",
+      "payload": "External HTML form posts email=attacker@lab.invalid to localhost:8000 without a CSRF token",
+      "observation": "Attacker form is hosted on a separate origin, localhost:8001.",
+      "url": "http://localhost:8001/safe?manual=1",
+      "screenshot": "screenshots/safe-csrf-setup.png",
+      "capturedAt": "2026-10-11T16:08:15.047Z"
     },
     {
       "mode": "safe",
       "name": "csrf-response",
-      "payload": "External auto-submitting POST: email=attacker@lab.invalid; no CSRF token",
-      "observation": "Cross-site POST lacks the SameSite-protected session and redirects to login.",
-      "url": "http://localhost:8000/safe/login",
+      "payload": "External POST: email=attacker@lab.invalid; no CSRF token",
+      "observation": "HTTP 403: authenticated forged request rejected by token and Origin checks.",
+      "url": "http://localhost:8000/safe/profile",
       "screenshot": "screenshots/safe-csrf-response.png",
-      "capturedAt": "2026-10-09T13:06:46.088Z"
+      "capturedAt": "2026-10-11T16:08:15.547Z"
     },
     {
       "mode": "safe",
@@ -225,7 +252,7 @@
       "observation": "Original email remains unchanged.",
       "url": "http://localhost:8000/safe/profile",
       "screenshot": "screenshots/safe-csrf-after.png",
-      "capturedAt": "2026-10-09T13:06:46.722Z"
+      "capturedAt": "2026-10-11T16:08:16.026Z"
     },
     {
       "mode": "safe",
@@ -234,7 +261,7 @@
       "observation": "HTTP 403: server-side token and Origin verification rejected the request.",
       "url": "http://localhost:8000/safe/profile",
       "screenshot": "screenshots/safe-csrf-token-origin.png",
-      "capturedAt": "2026-10-09T13:06:47.138Z"
+      "capturedAt": "2026-10-11T16:08:16.500Z"
     },
     {
       "mode": "safe",
@@ -243,7 +270,7 @@
       "observation": "Invalid credentials; attack rejected.",
       "url": "http://localhost:8000/safe/login",
       "screenshot": "screenshots/safe-sqli-easy.png",
-      "capturedAt": "2026-10-09T13:06:47.705Z"
+      "capturedAt": "2026-10-11T16:08:17.227Z"
     },
     {
       "mode": "safe",
@@ -252,7 +279,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+1%3D1+--+",
       "screenshot": "screenshots/safe-sqli-intermediate-true.png",
-      "capturedAt": "2026-10-09T13:06:48.208Z"
+      "capturedAt": "2026-10-11T16:08:17.801Z"
     },
     {
       "mode": "safe",
@@ -261,7 +288,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+1%3D2+--+",
       "screenshot": "screenshots/safe-sqli-intermediate-false.png",
-      "capturedAt": "2026-10-09T13:06:48.713Z"
+      "capturedAt": "2026-10-11T16:08:18.405Z"
     },
     {
       "mode": "safe",
@@ -270,7 +297,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27A%27+--+",
       "screenshot": "screenshots/safe-sqli-intermediate-infer-A.png",
-      "capturedAt": "2026-10-09T13:06:49.224Z"
+      "capturedAt": "2026-10-11T16:08:18.986Z"
     },
     {
       "mode": "safe",
@@ -279,7 +306,7 @@
       "observation": "No matching enrollment",
       "url": "http://localhost:8000/safe/enrollment?reference=ENR-2026-001%27+AND+substr%28%28SELECT+password+FROM+users+WHERE+username%3D%27admin%27%29%2C1%2C1%29%3D%27Z%27+--+",
       "screenshot": "screenshots/safe-sqli-intermediate-infer-Z.png",
-      "capturedAt": "2026-10-09T13:06:49.727Z"
+      "capturedAt": "2026-10-11T16:08:19.551Z"
     },
     {
       "mode": "safe",
@@ -288,7 +315,7 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+ORDER+BY+3+--+",
       "screenshot": "screenshots/safe-sqli-advanced-columns-three.png",
-      "capturedAt": "2026-10-09T13:06:50.242Z"
+      "capturedAt": "2026-10-11T16:08:20.119Z"
     },
     {
       "mode": "safe",
@@ -297,7 +324,7 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+ORDER+BY+4+--+",
       "screenshot": "screenshots/safe-sqli-advanced-columns-four.png",
-      "capturedAt": "2026-10-09T13:06:50.783Z"
+      "capturedAt": "2026-10-11T16:08:20.734Z"
     },
     {
       "mode": "safe",
@@ -306,7 +333,7 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27DATABASE%27%2Cname%2Cfile+FROM+pragma_database_list+--+",
       "screenshot": "screenshots/safe-sqli-advanced-database.png",
-      "capturedAt": "2026-10-09T13:06:51.315Z"
+      "capturedAt": "2026-10-11T16:08:21.349Z"
     },
     {
       "mode": "safe",
@@ -315,7 +342,7 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27TABLE%27%2Cname%2Csql+FROM+sqlite_master+WHERE+type%3D%27table%27+--+",
       "screenshot": "screenshots/safe-sqli-advanced-tables.png",
-      "capturedAt": "2026-10-09T13:06:51.839Z"
+      "capturedAt": "2026-10-11T16:08:21.929Z"
     },
     {
       "mode": "safe",
@@ -324,7 +351,7 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+%27COLUMN%27%2Cname%2Ctype+FROM+pragma_table_info%28%27users%27%29+--+",
       "screenshot": "screenshots/safe-sqli-advanced-columns.png",
-      "capturedAt": "2026-10-09T13:06:52.355Z"
+      "capturedAt": "2026-10-11T16:08:22.556Z"
     },
     {
       "mode": "safe",
@@ -333,7 +360,16 @@
       "observation": "Literal search input; no injected rows.",
       "url": "http://localhost:8000/safe/courses?q=%27+UNION+SELECT+username%2Cpassword%2Cemail+FROM+users+--+",
       "screenshot": "screenshots/safe-sqli-advanced-credentials.png",
-      "capturedAt": "2026-10-09T13:06:52.892Z"
+      "capturedAt": "2026-10-11T16:08:23.135Z"
+    },
+    {
+      "mode": "safe",
+      "name": "normal-search",
+      "payload": "Information",
+      "observation": "Legitimate course search still returns Information Security.",
+      "url": "http://localhost:8000/safe/courses?q=Information",
+      "screenshot": "screenshots/safe-normal-search.png",
+      "capturedAt": "2026-10-11T16:08:23.787Z"
     }
   ]
 }

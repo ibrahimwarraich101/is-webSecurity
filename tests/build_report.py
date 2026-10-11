@@ -37,16 +37,16 @@ page('CampusHub Web Security Project', [
     'Information Security Practical Assignment 2 | Part 2',
     'Muhammad Ibrahim | 23F-0590',
     'Muhammad Siddique | 23F-0669',
-    '9 October 2026',
+    '11 October 2026',
     'CampusHub demonstrates seven web-security requirements in a real database-backed education portal. Its vulnerable and safe versions share the same workflows but use independent SQLite databases. All documented attacks were submitted through the running application and checked in Chromium.',
     'The vulnerable version permits reflected, stored and DOM XSS, an authenticated cross-site email update, SQL login bypass, boolean inference and a complete SQL metadata-to-credentials extraction chain. The safe version blocks the same attacks while normal login, search, discussion and email updates continue to work.',
     'Evidence summary: ' + str(evidence['checks']) + ' browser captures and six live HTTP regression test methods passed. Each evidence page records the exact input and observed result, followed by the original browser screenshot. The app footer shows the capture date and time in Pakistan Standard Time.',
-    'GitHub submission URL: https://github.com/ibrahimwarraich101/is-webSecurity. Local Git development commits accompany the project. This report covers Part 2 only; Parts 1 and 3 can be added to the final combined Word submission.'
+    'GitHub submission URL: https://github.com/ibrahimwarraich101/is-webSecurity/tree/complete-question2. The complete-question2 branch contains the updated source and evidence with genuine development commits. Review: https://github.com/ibrahimwarraich101/is-webSecurity/pull/1. This report covers Part 2; Parts 1 and 3 belong in the combined Word submission.'
 ])
 page('Architecture and Reproduction', [
     'Frontend: semantic HTML, responsive CSS and browser JavaScript. Backend: Python standard-library HTTP server. Database: SQLite, accessed through real SQL queries. No application dependencies need to be installed.',
     'Start: python app.py. On the configured Windows computer, run ./run.ps1 or invoke the installed Python interpreter shown in README.md. Open http://localhost:8000/vulnerable and http://localhost:8000/safe. The header links switch versions; session cookies and databases are separate.',
-    'Start the attacker in another terminal: python app.py --attacker. It listens at http://127.0.0.1:8001. Main and attacker servers bind only to loopback. All accounts and extracted credentials are synthetic lab records.',
+    'Start the attacker in another terminal: python app.py --attacker. Open http://localhost:8001/vulnerable or http://localhost:8001/safe. Main and attacker servers bind only to loopback. All accounts and extracted credentials are synthetic lab records.',
     'Demo accounts: student / StudentPass!26 and admin / AdminPass!26. The safe database hashes seeded passwords with independent random salts and PBKDF2-HMAC-SHA256. Vulnerable plaintext passwords make the extraction impact visible.',
     'Tables: users(id, username, password, email, role); courses(code, title, credits); comments(id, author, body); enrollments(id, reference, user_id, course_code). The populated seed-data.sql creates both databases; safe initialization hashes its passwords before serving requests.',
     'Re-run live HTTP tests: python tests/test_security.py. Browser evidence: install the development-only Playwright package, then node tests/browser_evidence.cjs. tests/build_report.py builds the report from the original PNG images. tests/export_word.ps1 converts its temporary RTF to native DOCX through Microsoft Word. The submitted DOCX is editable and can be merged into the final combined report.',
@@ -62,16 +62,24 @@ page('Vulnerability Analysis and Defenses', [
     'Advanced SQL injection: ORDER BY 3 succeeds and ORDER BY 4 fails, establishing three result columns. UNION queries enumerate the database, tables and users columns before extracting demo credentials. SQLite schema introspection through pragma_database_list, sqlite_master and pragma_table_info is the equivalent of information_schema. Safe mode parameterizes the LIKE value.'
 ])
 page('CSRF Conditions and Viva Guide', [
-    'The cross-site attacker is http://127.0.0.1:8001 and the target is http://localhost:8000. These are different origins and different sites. A newly issued vulnerable cookie omits SameSite. Chromium allows its top-level cross-site POST during the short default-cookie grace period. Therefore run the vulnerable attack immediately after login. The browser evidence script does this automatically without adding cookies manually.',
-    'Safe mode explicitly sets SameSite=Lax, so the cross-site POST does not carry the authenticated cookie. To exercise server-side protection too, an additional attacker request comes from http://localhost:8001: it is same-site but cross-origin, carries the session cookie, and receives HTTP 403 because its token and Origin are invalid. The profile remains unchanged.',
+    'The attacker is http://localhost:8001 and the target is http://localhost:8000. These are different origins on the same site. The attacker page submits a forged email update using the existing browser session, without a token. This genuine CSRF demonstration does not depend on the age of the session cookie. Visit /vulnerable for automatic submission, or /vulnerable?manual=1 to inspect the form before pressing Continue.',
+    'SameSite=Lax does not stop a same-site, cross-origin request. The safe demonstration therefore sends the real authenticated session cookie and receives HTTP 403 from server-side token and Origin validation. The unchanged profile is checked after the attack. The additional cross-site URL http://127.0.0.1:8001 remains available, but its vulnerable success can depend on browser cookie policy; use localhost:8001 for the viva.',
     'For the viva, first browse the dashboard and demonstrate normal login, course search, posting and email changes. For each XSS type, submit the payload through its actual UI, explain its source and sink, then repeat on safe mode. For stored XSS use a different unauthenticated browser context to establish persistence.',
     'For SQL injection, explain how quotes, comments and UNION alter the query structure. Demonstrate true/false inference, then follow the advanced chain in order. The final cards contain actual synthetic records queried from SQLite, rather than a scripted success message.',
     'For CSRF, sign in immediately before visiting the external page. Show the before and after profile emails in both versions, and explain why a cookie alone cannot establish user intent. Different ports alone change origins, not sites.',
     'The safe version addresses the assignment attack set. Production use would additionally require HTTPS and Secure cookies, session expiry, rate limiting, access-control policy and operational monitoring.',
     'References: OWASP Cross Site Scripting Prevention Cheat Sheet; OWASP Cross Site Request Forgery Prevention Cheat Sheet; OWASP SQL Injection Prevention Cheat Sheet. Direct links are included in README.md.'
 ])
+page('CSRF Attack Payload', [
+    'Run python app.py --attacker, sign in as student at http://localhost:8000/vulnerable/login, then visit http://localhost:8001/vulnerable. The external document contains this complete attack payload:',
+    '<!doctype html>\n<html><body>\n<form id="attack" method="post" action="http://localhost:8000/vulnerable/profile">\n<input type="hidden" name="email" value="attacker@lab.invalid">\n<button>Continue</button>\n</form>\n<script>document.getElementById("attack").submit()</script>\n</body></html>',
+    'Repeat with safe in the target action and attacker URL after signing in to the safe version. The request has no csrf_token and an external Origin, so it receives HTTP 403. No email update is committed.',
+    'The setup screenshots use ?manual=1, which omits only the automatic submission script so the attacker form can be inspected. Pressing Continue sends the same forged POST. The automatic route is separately covered by the browser test.'
+])
 for item in evidence['evidence']:
-    title = item['mode'].title() + ' ' + item['name'].replace('-', ' ').title()
+    names = {'reflected-xss': 'XSS Reflected', 'stored-xss': 'XSS Stored', 'dom-xss': 'XSS DOM Based', 'sqli-easy': 'SQL Injection Easy'}
+    label = names.get(item['name'], item['name'].replace('sqli-intermediate', 'SQL Injection Intermediate').replace('sqli-advanced', 'SQL Injection Advanced').replace('csrf', 'CSRF').replace('-', ' ').title())
+    title = ('Safe Version ' if item['mode'] == 'safe' else 'Vulnerable Version ') + label
     paragraphs = []
     if item['payload']:
         paragraphs.append('Input or attack setup: ' + item['payload'])

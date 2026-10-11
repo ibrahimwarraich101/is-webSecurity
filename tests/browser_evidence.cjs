@@ -75,13 +75,14 @@ async function search(page, mode, payload) {
       await page.waitForLoadState();
       assert.ok((await page.locator('#current-email').textContent()).includes('student@campushub.invalid'));
       await capture(page, mode, 'csrf-before', 'Normal authenticated profile update', 'Original email persisted before the attack.');
-      // Login again so the vulnerable default-cookie grace window is fresh.
-      await login(page, mode);
-      await page.goto(`http://127.0.0.1:8001/${mode}`);
+      // Same-site, cross-origin attacker: works without a browser grace period.
+      await page.goto(`http://localhost:8001/${mode}?manual=1`);
+      await capture(page, mode, 'csrf-setup', 'External HTML form posts email=attacker@lab.invalid to localhost:8000 without a CSRF token', 'Attacker form is hosted on a separate origin, localhost:8001.');
+      await page.getByRole('button', {name:'Continue'}).click();
       await page.waitForURL(`${base}/${mode}/**`);
-      await capture(page, mode, 'csrf-response', 'External auto-submitting POST: email=attacker@lab.invalid; no CSRF token', mode==='vulnerable'?'Cross-site form changed the authenticated profile.':'Cross-site POST lacks the SameSite-protected session and redirects to login.');
-      if (mode==='safe') await login(page, mode);
-      else await page.goto(`${base}/${mode}/profile`);
+      await capture(page, mode, 'csrf-response', 'External POST: email=attacker@lab.invalid; no CSRF token', mode==='vulnerable'?'Cross-origin form changed the authenticated profile.':'HTTP 403: authenticated forged request rejected by token and Origin checks.');
+      if(mode==='safe') assert.ok((await page.locator('section').textContent()).includes('CSRF protection rejected'));
+      await page.goto(`${base}/${mode}/profile`);
       const email = await page.locator('#current-email').textContent();
       assert.ok(email.includes(mode==='vulnerable'?'attacker@lab.invalid':'student@campushub.invalid'));
       await capture(page, mode, 'csrf-after', 'External POST followed by authenticated profile verification', mode==='vulnerable'?'Attacker email is stored in the database.':'Original email remains unchanged.');
@@ -94,6 +95,11 @@ async function search(page, mode, payload) {
         await page.goto(`${base}/safe/profile`);
         assert.ok((await page.locator('#current-email').textContent()).includes('student@campushub.invalid'));
       }
+      // Also exercise the automatic attack route used in the manual viva steps.
+      await page.goto(`http://localhost:8001/${mode}`);
+      await page.waitForURL(`${base}/${mode}/profile`);
+      if(mode==='safe') assert.ok((await page.locator('section').textContent()).includes('CSRF protection rejected'));
+      else assert.ok((await page.locator('#current-email').textContent()).includes('attacker@lab.invalid'));
       await page.goto(`${base}/${mode}/login`);
       await page.locator('[name=username]').fill("admin' -- ");
       await page.locator('[name=password]').fill('wrong');
@@ -122,6 +128,7 @@ async function search(page, mode, payload) {
       // Safe legitimate queries still function after the malicious inputs.
       await search(page,mode,'Information');
       assert.ok((await page.locator('.grid').textContent()).includes('Information Security'));
+      await capture(page,mode,'normal-search','Information','Legitimate course search still returns Information Security.');
       await context.close();
     }
     fs.writeFileSync(path.join(root,'submission','verification.json'),JSON.stringify({status:'passed',checks:evidence.length,evidence},null,2));
