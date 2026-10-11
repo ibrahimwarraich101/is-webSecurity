@@ -80,12 +80,27 @@ The payload exists only in the URL fragment, which browsers do not send to the s
 
 ### CSRF
 
-1. Log in at `http://localhost:8000/vulnerable/login` and confirm the profile email.
-2. Navigate to `http://127.0.0.1:8001/vulnerable`. Its form automatically posts `email=attacker@lab.invalid` to the authenticated localhost profile, without a token.
-3. Confirm the persisted email changed. The vulnerable cookie deliberately omits SameSite: modern browsers permit the cross-site top-level POST for a newly issued cookie during their approximately two-minute default-cookie grace window. Run the demo immediately after login. This is a real browser behavior, not cookie spoofing.
-4. Repeat immediately after logging in to the safe version, using `http://127.0.0.1:8001/safe`. Explicit SameSite=Lax withholds the cookie and no change occurs. Log back in and verify the original email. Live HTTP tests separately establish that even a request carrying the cookie is rejected without a valid token and trusted Origin.
+1. Start the attacker server in another terminal: `python app.py --attacker`.
+2. Log in at `http://localhost:8000/vulnerable/login` and record the profile email.
+3. Visit `http://localhost:8001/vulnerable`. Its external HTML form automatically posts `email=attacker@lab.invalid` to the authenticated profile without a CSRF token.
+4. Confirm the changed email persists on reloading the profile.
+5. Log in to safe mode and repeat using `http://localhost:8001/safe`. The authenticated forged request receives HTTP 403; the original email remains unchanged.
+6. For inspecting and capturing the attack setup, append `?manual=1` to either attacker URL, then press Continue to send the identical forged POST.
 
-The attacker uses a different site and origin (`127.0.0.1:8001`) from the target (`localhost:8000`). Different ports alone would be different origins but would not be different sites.
+The attacker and target have different origins because their ports differ. They are on the same site, so SameSite=Lax alone does not stop this request. The safe version rejects it through session-bound token and Origin checks. This makes the viva demonstration independent of browser cookie grace periods. The alternative cross-site URL `http://127.0.0.1:8001` is still available; its vulnerable success depends on the browser's default-cookie policy.
+
+Complete attacker payload (replace `vulnerable` with `safe` to repeat against safe mode):
+
+```html
+<!doctype html>
+<html><body>
+<form id="attack" method="post" action="http://localhost:8000/vulnerable/profile">
+<input type="hidden" name="email" value="attacker@lab.invalid">
+<button>Continue</button>
+</form>
+<script>document.getElementById('attack').submit()</script>
+</body></html>
+```
 
 ### Easy SQL injection
 
@@ -129,7 +144,7 @@ Screenshots and the Part 2 Word report are in `submission/`. The report contains
 
 ## Submission and commit history
 
-Repository: https://github.com/ibrahimwarraich101/is-webSecurity. The assignment PDF is excluded from the project repository. Keep genuine development commits; do not backdate or invent commits. Instructor approval is needed for the two-member group because the brief specifies three students. The PDF's marking rows add up to 110 although its Part 2 total says 100; this project covers every listed requirement.
+Repository: https://github.com/ibrahimwarraich101/is-webSecurity. The assignment PDFs are excluded from the project repository. Keep genuine development commits; do not backdate or invent commits. Instructor approval is needed for the two-member group because the brief specifies three students. The PDF's marking rows add up to 110 although its Part 2 total says 100; the implementation covers every listed Part 2 attack and defense. Fresh verification on 11 October 2026 records six passing HTTP test methods and 41 browser evidence captures, including attacker setup and legitimate search in both modes.
 
 ## Security references
 

