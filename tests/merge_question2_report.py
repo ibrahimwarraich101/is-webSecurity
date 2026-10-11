@@ -32,6 +32,9 @@ for i, n in enumerate(n for node in newnodes for n in node.iter() if n.tag.endsw
 
 # Import source styles under unique names so the rendered Part 2 layout survives.
 styles = ET.fromstring(files['word/styles.xml'])
+for node in list(styles):
+    if (node.get(f'{{{W}}}styleId') or '').startswith('Q2_'):
+        styles.remove(node)
 srcstyles = ET.fromstring(source['word/styles.xml'])
 stylemap = {n.get(f'{{{W}}}styleId'): 'Q2_' + n.get(f'{{{W}}}styleId') for n in srcstyles.findall(f'{{{W}}}style')}
 for node in srcstyles.findall(f'{{{W}}}style'):
@@ -50,6 +53,9 @@ for node in newnodes:
             n.set(f'{{{W}}}val', stylemap[value])
 
 rels = ET.fromstring(files['word/_rels/document.xml.rels'])
+for node in list(rels):
+    if (node.get('Id') or '').startswith('Q2Rel'):
+        rels.remove(node)
 srcrels = ET.fromstring(source['word/_rels/document.xml.rels'])
 relmap = {}
 for i, rel in enumerate(srcrels):
